@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="WSService"
+             targetNamespace="http://example.com/wsdl"
+             xmlns:tns="http://example.com/wsdl"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+  <types>
+    <xsd:schema targetNamespace="http://example.com/wsdl">
+      <xsd:element name="GetData">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="input" type="xsd:string"/>
+            <xsd:element name="Security" type="tns:SecurityHeader"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:complexType name="SecurityHeader">
+        <xsd:sequence>
+          <xsd:element name="Username" type="xsd:string"/>
+          <xsd:element name="Password" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:element name="GetDataResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </types>
+
+  <message name="GetDataRequest">
+    <part name="parameters" element="tns:GetData"/>
+  </message>
+  <message name="GetDataResponse">
+    <part name="parameters" element="tns:GetDataResponse"/>
+  </message>
+
+  <portType name="WSServicePortType">
+    <operation name="GetData">
+      <input message="tns:GetDataRequest"/>
+      <output message="tns:GetDataResponse"/>
+    </operation>
+  </portType>
+
+  <binding name="WSServiceBinding" type="tns:WSServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="GetData">
+      <soap:operation soapAction="http://example.com/wsdl/GetData"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+
+  <service name="WSService">
+    <port name="WSServicePortType" binding="tns:WSServiceBinding">
+      <soap:address location="http://localhost:8000/ws-security"/>
+    </port>
+  </service>
+</definitions>
